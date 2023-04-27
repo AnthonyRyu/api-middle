@@ -15,7 +15,6 @@ router.get('/', async (req,res)=>{
     res.json(result);
 })
 
-
 // update
 router.put('/:id', async (req,res)=>{
     const result = await socController.update(req);
@@ -33,5 +32,15 @@ router.post('/reset', async (req,res)=>{
     const result = await socController.reset(req);
     res.json(result);
 })
+
+router.get('/:team', async (req,res)=>{
+    const result = await socController.getTeam(req);
+    res.json(result);
+})
+
+// router.get('/:id', async (req,res)=>{
+//     const result = await socController.getSelectOne(req);
+//     res.json(result);
+// })
 
 module.exports = router;
