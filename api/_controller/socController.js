@@ -36,7 +36,7 @@ const getList = async (req) => {
   try {
     // 마지막 id, len 갯수
     const lastId = parseInt(req.query.lastId) || 0;
-    const len = parseInt(req.query.len) || 10;
+    const len = parseInt(req.query.len) || 100;
 
     let where = "";
     if (lastId) {
@@ -194,7 +194,26 @@ const socController = {
       return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
     }
   },
+
+  getTeam: async (req) => {
+    try {
+      const find = parseInt(req.query.team) || 0;
+      const len = parseInt(req.query.len) || 10;
+  
+      let where = "";
+      if (find) {
+        // 0은 false
+        where = `WHERE team = ${team}`;
+      }
+      const query = `SELECT * FROM ${TABLE.SOC} ${where} order by team desc limit 0, ${len}`;
+      const [rows] = await db.execute(query);
+      return rows;
+    } catch (e) {
+      console.log(e.message);
+      return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
+    }
+  },
   
 };
 
-module.exports = socController;
+module.exports = socController;''
