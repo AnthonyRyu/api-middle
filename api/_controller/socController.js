@@ -197,15 +197,107 @@ const socController = {
 
   getTeam: async (req) => {
     try {
-      const find = parseInt(req.query.team) || 0;
-      const len = parseInt(req.query.len) || 10;
+      const { team } = req.params;
+      //nconst query = `SELECT * FROM ${TABLE.SOC} ${where} order by team desc limit 0, ${len}`;
+      const query = `SELECT * FROM ${TABLE.SOC} WHERE team = ?`;
+      const value = [team];
+      const [rows] = await db.execute(query, value);
+      console.log(rows)
+      return rows;
+    } catch (e) {
+      console.log(e.message);
+      return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
+    }
+  },
+
+  getPosition: async (req) => {
+    try {
+      const { position } = req.params;
+      const query = `SELECT * FROM ${TABLE.SOC} WHERE position = ?`;
+      const value = [position];
+      const [rows] = await db.execute(query, value);
+      console.log(rows)
+      return rows;
+    } catch (e) {
+      console.log(e.message);
+      return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
+    }
+  },
+
+  getGoal: async (req) => {
+    try {
+      const { goal } = req.params;
+      const query = `SELECT * FROM ${TABLE.SOC} WHERE goal = ?`;
+      const value = [goal];
+      const [rows] = await db.execute(query, value);
+      console.log(rows)
+      return rows;
+    } catch (e) {
+      console.log(e.message);
+      return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
+    }
+  },
+
+  // getHighGoal: async (req) => {
+  //   try {
+  //     const { goal } = req.params;
+  //     const query = `SELECT * FROM ${TABLE.SOC} WHERE goal = ? order by goal desc`;
+  //     const value = [goal];
+  //     const [rows] = await db.execute(query, value);
+  //     console.log(rows)
+  //     return rows;
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
+  //   }
+  // },
+
+  getHighGoal: async (req) => {
+    try {
+      // 마지막 id, len 갯수
+      const lastId = parseInt(req.query.lastId) || 0;
+      const len = parseInt(req.query.len) || 100;
   
       let where = "";
-      if (find) {
+      if (lastId) {
         // 0은 false
-        where = `WHERE team = ${team}`;
+        where = `WHERE id < ${lastId}`;
       }
-      const query = `SELECT * FROM ${TABLE.SOC} ${where} order by team desc limit 0, ${len}`;
+      const query = `SELECT * FROM ${TABLE.SOC} ${where} order by goal desc limit 0, ${len}`;
+      const [rows] = await db.execute(query);
+      return rows;
+    } catch (e) {
+      console.log(e.message);
+      return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
+    }
+  },
+
+  // getHighGame: async (req) => {
+  //   try {
+  //     const { game } = req.params;
+  //     const query = `SELECT * FROM ${TABLE.SOC} WHERE game = ? order by game desc`;
+  //     const value = [game];
+  //     const [rows] = await db.execute(query, value);
+  //     console.log(rows)
+  //     return rows;
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return resData(STATUS.E300.result, STATUS.E300.resultDesc, moment().format('LT'));
+  //   }
+  // },
+
+  getHighGame: async (req) => {
+    try {
+      // 마지막 id, len 갯수
+      const lastId = parseInt(req.query.lastId) || 0;
+      const len = parseInt(req.query.len) || 100;
+  
+      let where = "";
+      if (lastId) {
+        // 0은 false
+        where = `WHERE id < ${lastId}`;
+      }
+      const query = `SELECT * FROM ${TABLE.SOC} ${where} order by game desc limit 0, ${len}`;
       const [rows] = await db.execute(query);
       return rows;
     } catch (e) {
@@ -214,6 +306,7 @@ const socController = {
     }
   },
   
+  
 };
 
-module.exports = socController;''
+module.exports = socController;
